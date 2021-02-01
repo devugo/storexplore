@@ -8,7 +8,7 @@ const initialState = {
     loggedIn: false
 };
 
-export default (state = initialState, action) => {
+const authReducer = (state = initialState, action) => {
     switch(action.type){
         case LOGIN_USER:
             let userInfo = action.data;
@@ -17,7 +17,8 @@ export default (state = initialState, action) => {
                 userInfo.displayName,
                 userInfo.email,
                 userInfo.photoURL,
-                userInfo.uid
+                userInfo.uid,
+                userInfo.role
             );
             LocalStore.add('DEVUGOUSER', JSON.stringify(userData));
 
@@ -30,3 +31,5 @@ export default (state = initialState, action) => {
             return state;
     }
 }
+
+export default authReducer;

@@ -5,12 +5,15 @@ import Login from '../pages/auth/login';
 import Register from '../pages/auth/register';
 import ForgotPassword from '../pages/auth/forgot-password';
 
+// Middlewares
+import NotAuth from '../middlewares/NotAuth';
+
 const AuthRoutes = () => {
     return (
         <>
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/password-reset" component={ForgotPassword} />
+            <NotAuth exact path="/login" component={Login} />
+            <NotAuth exact path="/register" component={Register} />
+            <NotAuth exact path="/password-reset" component={ForgotPassword} />
         </>
     )
 }

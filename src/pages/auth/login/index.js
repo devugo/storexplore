@@ -11,6 +11,7 @@ import LogoText from '../../../images/logo-text.svg';
 import * as CONSTANTS from '../../../constants';
 import { Message } from '../../../components/message';
 
+//  FIREBASE HELPERS
 import { signInWithGoogle } from '../../../firebase';
 import { auth } from '../../../firebase';
 import { generateUserDocument } from '../../../firebase';
@@ -70,7 +71,7 @@ const Login = () => {
 
     if(userAuth && userAuth.loggedIn){
         console.log(auth)
-        return <Redirect to="/" />
+        return <Redirect to="/admin" />
     }
 
     // auth.signOut()
