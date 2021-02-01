@@ -1,0 +1,101 @@
+
+// .asb-container {
+//     padding: 0 26px;
+//     max-width: 1440px;
+//     margin: 0 auto;
+//     padding-top: 15px;
+//     padding-bottom: 15px;
+// }
+
+// .asb-card {
+//     width: 258px;
+//     height: 129px;
+//     box-shadow: 0px 4px 30px rgba(192, 192, 192, 0.25);
+//     border-radius: 6px;
+//     padding: 16px;
+//     background-color: #fff;
+// }
+
+.devugo-card {
+    background-color: $white;
+    // max-width: 70%;
+    padding: 40px 20px 40px 20px;
+    box-shadow: 0 0px 8px 0px rgba(0, 0, 0, 0.05);
+    border-radius: 10;
+}
+
+@include media-md{
+    .devugo-card {
+        padding: 40px;
+    }
+}
+
+.auth {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    padding: 10px;
+
+    .devugo-card {
+        width: 500px;
+        height: 100%;
+        margin: 0 auto;
+    }
+
+    form {
+
+        button {
+            width: 100%;
+            height: 50px;
+        }
+    }
+}
+
+.short-underline {
+    position: relative;
+    @include transition-ease;
+
+    &::before {
+        position: absolute;
+        content: '';
+        left: 0;
+        top: 40px;
+        height: 5px;
+        width: 50px;
+        background-color: $primary-color;
+    }
+
+}
+body {
+    background-color: $light-gray;
+}
+
+.box-shadow {
+    box-shadow: 0 0px 10px 0px rgba(0, 0, 0, 0.05);
+}
+
+// .wrapper {
+//     max-width: 1280px;
+//     padding: 20px;
+// }
+
+h1, h2, h3, h4, h5, h6 {
+    color: $header-text-color;
+}
+
+h1 {
+    font-size: 48px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 16px;
+}
+
+p{
+    font-size: 15px;
+    color: $paragraph-text-color;
+}
