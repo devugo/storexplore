@@ -34,14 +34,12 @@ const Login = () => {
         try {
             await dispatch(AuthActions.login(user));
             Message('success', 'Login successful', 5);
+            console.log('got here');
             // setLoader(false);
         }catch (error){
-            console.log(error.response)
+            // console.log(error.response)
+            console.log(error.message)
             let callError = CONSTANTS.ERRORDESC;
-
-            if(error.response.data && error.response.data.error){
-                callError = error.response.data.error;
-            }
             Message('error', callError, 5);
             setLoader(false);
         }
@@ -61,16 +59,17 @@ const Login = () => {
         // console.log('got here');
         auth.onAuthStateChanged(async userAuth => {
             console.log(userAuth)
-            const user = await generateUserDocument(userAuth);
-            console.log(user)
-            // setUser(user)
-            processLogin(user)
+            if(userAuth){
+                const user = await generateUserDocument(userAuth);
+                console.log(user)
+                // setUser(user)
+                processLogin(user)
+            }
           
         });
     }, [])
 
     if(userAuth && userAuth.loggedIn){
-        console.log(auth)
         return <Redirect to="/admin" />
     }
 
@@ -140,7 +139,7 @@ const Login = () => {
                                 color="primary"
                                 variant="contained"
                                 style={{background: '#dc3545'}}
-                                onClick={signInWithGoogle}
+                                onClick={() => signInWithGoogle()}
                             >
                                 Sign In With Google
                             </Button>

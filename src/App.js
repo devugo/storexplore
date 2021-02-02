@@ -1,7 +1,6 @@
 import { Provider } from 'react-redux';
-import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
+import { Switch, BrowserRouter as Router } from 'react-router-dom';
 import { store } from './store';
-import Home from './pages/home';
 
 import Routes from './routes';
 
@@ -11,7 +10,6 @@ function App() {
       <Provider store={store}>
           <Router>
             <Switch>
-              <Route exact path="/" component={Home} />
               <Routes />
             </Switch>
           </Router>

@@ -1,4 +1,4 @@
-import { LOGIN_USER } from '../actions/auth';
+import { LOGIN_USER, LOGOUT_USER } from '../actions/auth';
 
 import User from '../../models/User';
 import * as LocalStore from '../../helpers/functions/localStore';
@@ -12,6 +12,7 @@ const authReducer = (state = initialState, action) => {
     switch(action.type){
         case LOGIN_USER:
             let userInfo = action.data;
+            LocalStore.add('DEVUGOUSER', JSON.stringify(userInfo));
 
             const userData = new User(
                 userInfo.displayName,
@@ -20,13 +21,17 @@ const authReducer = (state = initialState, action) => {
                 userInfo.uid,
                 userInfo.role
             );
-            LocalStore.add('DEVUGOUSER', JSON.stringify(userData));
 
             return {
                 ...state,
                 data: userData,
                 loggedIn: true
             }
+        case LOGOUT_USER:
+            LocalStore.remove('DEVUGOUSER');
+
+            return initialState;
+
         default:
             return state;
     }
