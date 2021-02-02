@@ -23,6 +23,14 @@ $warning-color: #ffc107;
 $success-color: #28a745;
 
 
+
+$color1: #AEFFD8;
+$color2: #8AFFC1;
+$color3: #8FDC97;
+$color4: #AC8887;
+$color4: #9F4A54;
+
+
 @mixin media-sm {
     @media screen and (min-width: 500px){
         @content;

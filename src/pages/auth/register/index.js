@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Formik } from 'formik';
 import { Link } from 'react-router-dom';
 // import { Redirect } from 'react-router';
@@ -6,34 +7,70 @@ import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-// import { Message } from '../../../components/message';
+import { Message } from '../../../components/message';
 import LogoText from '../../../images/logo-text.svg';
 
 import { auth } from '../../../firebase';
 import { generateUserDocument } from '../../../firebase';
+import * as CONSTANTS from '../../../constants';
 
-// import * as CONSTANTS from '../../../constants';
+//  Redux Actions
+import * as AuthActions from '../../../store/actions/auth';
 
 import './register.scss';
 
 const Register = () => {
+    const dispatch = useDispatch();
+
     const [ loader, setLoader ] = useState(false);
     
-    const processRegister = useCallback(async (formData) => {
-        console.log("here");
-    }, [loader, setLoader])
+    const processLogin = useCallback(async (user) => {
+        console.log(user);
+        try {
+            await dispatch(AuthActions.login(user));
+            Message('success', 'Login successful', 5);
+            console.log('got here');
+            // setLoader(false);
+        }catch (error){
+            // console.log(error.response)
+            console.log(error.message)
+            let callError = CONSTANTS.ERRORDESC;
+            Message('error', callError, 5);
+            setLoader(false);
+        }
+    }, [setLoader]);
 
-    const createUserWithEmailAndPasswordHandler = async (event, email, password) => {
-        event.preventDefault();
+    const createUserWithEmailAndPasswordHandler = async (name, email, password) => {
         try{
           const {user} = await auth.createUserWithEmailAndPassword(email, password);
         //   generateUserDocument(user, {displayName});
-          generateUserDocument("user", "displayName");
+          generateUserDocument(user, {displayName: name});
         }
         catch(error){
-        //   setError('Error Signing up with email and password');
+            // setError('Error Signing up with email and password');
+            let callError = CONSTANTS.ERRORDESC;
+
+            if(error.code === 'auth/email-already-in-use'){ 
+                callError = error.message
+            }
+            console.error("Error", error);
+            Message('error', callError, 5);
         }
     };
+
+    useEffect(() => {
+        // console.log('got here');
+        auth.onAuthStateChanged(async userAuth => {
+            console.log(userAuth)
+            if(userAuth){
+                const user = await generateUserDocument(userAuth);
+                // console.log(user)
+                // setUser(user)
+                processLogin(user)
+            }
+          
+        });
+    }, [])
 
     return (
         <div className="auth">
@@ -44,8 +81,9 @@ const Register = () => {
                 <p className="mt-3 mb-2"><strong>New here? Signup to proceed!</strong></p>
 
                 <Formik
-                    initialValues={{ email: '', password: '', name: '', password_confirmation: '', agree: false }}
+                    initialValues={{ email: '', password: '', name: '', password_confirmation: '' }}
                     validate={values => {
+                        // console.log(values);
                         const errors = {};
                         if (!values.email) {
                             errors.email = 'Email is required';
@@ -65,15 +103,15 @@ const Register = () => {
                         }else if(values.password_confirmation !== values.password){
                             errors.password_confirmation = 'Confirm Password must match password';
                         }
-                        if(!values.agree){
-                            errors.agree = 'Please, Agree to terms and conditions';
-                        }
+                        // if(!values.agree){
+                        //     errors.agree = 'Please, Agree to terms and conditions';
+                        // }
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
                         setLoader(true);
                         
-                        processRegister(values);
+                        createUserWithEmailAndPasswordHandler(values.name, values.email, values.password);
                     
                     }}
                 >

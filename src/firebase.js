@@ -4,14 +4,14 @@ import "firebase/firestore";
 
 
 var firebaseConfig = {
-   
-    apiKey: "##########",
-    authDomain: "#######################",
-    projectId: "#############",
-    storageBucket: "##############",
-    messagingSenderId: "#############",
-    appId: "###################",
-    measurementId: "###########"
+    
+    // apiKey: "##########",
+    // authDomain: "#######################",
+    // projectId: "#############",
+    // storageBucket: "##############",
+    // messagingSenderId: "#############",
+    // appId: "###################",
+    // measurementId: "###########"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -39,6 +39,7 @@ export const generateUserDocument = async (user, additionalData) => {
             email,
             photoURL,
             role: 1,
+            hasStore: false,
             ...additionalData
             });
         } catch (error) {

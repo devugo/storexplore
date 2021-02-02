@@ -19,7 +19,8 @@ const authReducer = (state = initialState, action) => {
                 userInfo.email,
                 userInfo.photoURL,
                 userInfo.uid,
-                userInfo.role
+                userInfo.role,
+                userInfo.hasStore
             );
 
             return {

@@ -6,6 +6,8 @@ import { Redirect } from 'react-router';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+// import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import LogoText from '../../../images/logo-text.svg';
 import * as CONSTANTS from '../../../constants';
@@ -20,13 +22,18 @@ import { generateUserDocument } from '../../../firebase';
 import * as AuthActions from '../../../store/actions/auth';
 
 import './login.scss';
+
+const loaders = {
+    google: false,
+    form: false
+}
   
 
 const Login = () => {
     const userAuth = useSelector(state => state.auth);
     const dispatch = useDispatch();
 
-    const [ loader, setLoader ] = useState(false);
+    const [ loading, setLoading ] = useState(loaders);
     // const [ user, setUser ] = useState();
 
     const processLogin = useCallback(async (user) => {
@@ -34,34 +41,64 @@ const Login = () => {
         try {
             await dispatch(AuthActions.login(user));
             Message('success', 'Login successful', 5);
-            console.log('got here');
-            // setLoader(false);
+            
+            // setLoading({
+            //     form: false,
+            //     google: false
+            // })
+
         }catch (error){
             // console.log(error.response)
             console.log(error.message)
             let callError = CONSTANTS.ERRORDESC;
+            
+
+            // setLoading({
+            //     form: false,
+            //     google: false
+            // })
             Message('error', callError, 5);
-            setLoader(false);
         }
-    }, [setLoader]);
+    }, [setLoading]);
 
     // console.log(user)
 
-    const signInWithEmailAndPasswordHandler = (event, email, password) => {
-        event.preventDefault();
+    const signInWithEmailAndPasswordHandler = useCallback((email, password) => {
+        // event.preventDefault();
         auth.signInWithEmailAndPassword(email, password).catch(error => {
             // setError("Error signing in with password and email!");
-            console.error("Error signing in with password and email", error);
+            let callError = CONSTANTS.ERRORDESC;
+            if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password'){
+                callError = "Invalid credentials";
+            }
+            Message('error', callError, 5);
+
+            // console.error("Error signing in with password and email", error);
         });
-    };
+    }, [setLoading]);
+
+    const signInWithGoogleHandler = useCallback(async () => {
+        setLoading({
+            ...loading,
+            google: true
+        })
+        await signInWithGoogle();
+
+        setLoading({
+            form: false,
+            google: false
+        })
+       
+
+    }, [setLoading, loading]);
 
     useEffect(() => {
         // console.log('got here');
         auth.onAuthStateChanged(async userAuth => {
-            console.log(userAuth)
+            // console.log(userAuth)
             if(userAuth){
                 const user = await generateUserDocument(userAuth);
-                console.log(user)
+                // console.log(user)
                 // setUser(user)
                 processLogin(user)
             }
@@ -100,9 +137,14 @@ const Login = () => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        // setLoader(true);
                         
-                        processLogin(values);
+                        setLoading({
+                            ...loading,
+                            form: true
+                        })
+
+                        // processLogin(values);
+                        signInWithEmailAndPasswordHandler(values.email, values.password)
                     
                     }}
                 >
@@ -127,8 +169,12 @@ const Login = () => {
                                 color="primary"
                                 variant="contained"
                                 type="submit"
+                                disabled={loading.google || loading.form}
                             >
                                 Sign in
+                                {
+                                    loading.form ? <CircularProgress size={20} style={{color: 'white'}} /> : ''
+                                }
                             </Button>
                             
                             <div className="text-center mt-3">
@@ -139,9 +185,13 @@ const Login = () => {
                                 color="primary"
                                 variant="contained"
                                 style={{background: '#dc3545'}}
-                                onClick={() => signInWithGoogle()}
+                                onClick={signInWithGoogleHandler}
+                                disabled={loading.google || loading.form}
                             >
-                                Sign In With Google
+                                Sign In With Google 
+                                {
+                                    loading.google ? <CircularProgress size={20} style={{color: 'white'}} /> : ''
+                                }
                             </Button>
 
                             <div className="text-center mt-3">
