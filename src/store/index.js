@@ -3,9 +3,11 @@ import ReduxThunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import authReducer from './reducers/auth';
+import storeReducer from './reducers/store';
 
 export const rootReducer = combineReducers({
     auth: authReducer,
+    store: storeReducer
 });
 
 export const middlewares = [ReduxThunk];

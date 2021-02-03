@@ -4,7 +4,7 @@ import "firebase/firestore";
 
 
 var firebaseConfig = {
-    
+
     // apiKey: "##########",
     // authDomain: "#######################",
     // projectId: "#############",

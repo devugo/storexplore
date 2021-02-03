@@ -13,10 +13,15 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            position: relative;
+            padding: 17px;
 
             h1 {
                 text-shadow: 2px 2px 4px #000000;
                 color: $white;
+                position: absolute;
+                top: 20px;
+                right: 20px;
             }
 
             p {
@@ -30,6 +35,21 @@
         }
         .right {
             flex: 1;
+            position: relative;
+
+            h1 
+            {
+                position: absolute;
+                left: 20px;
+                top: 20px;
+            }
+
+            .devugo-card {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
         }
     }
 }
