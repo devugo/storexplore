@@ -1,17 +1,23 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Formik } from 'formik';
 import { Link } from 'react-router-dom';
 // import { Redirect } from 'react-router';
 
+//  MATERIAL UI COMPONENTS
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { Message } from '../../../components/message';
 import LogoText from '../../../images/logo-text.svg';
 
+//  FIREBASE
+import { signInWithGoogle } from '../../../firebase';
 import { auth } from '../../../firebase';
 import { generateUserDocument } from '../../../firebase';
+
+
 import * as CONSTANTS from '../../../constants';
 
 //  Redux Actions
@@ -19,28 +25,31 @@ import * as AuthActions from '../../../store/actions/auth';
 
 import './register.scss';
 
+const loaders = {
+    google: false,
+    form: false
+}
+
 const Register = () => {
     const dispatch = useDispatch();
 
-    const [ loader, setLoader ] = useState(false);
+    const [ loading, setLoading ] = useState(loaders);
     
     const processLogin = useCallback(async (user) => {
         console.log(user);
         try {
             await dispatch(AuthActions.login(user));
-            Message('success', 'Login successful', 5);
-            console.log('got here');
-            // setLoader(false);
+            Message('success', 'Sign in successful', 5);
+            
         }catch (error){
             // console.log(error.response)
             console.log(error.message)
             let callError = CONSTANTS.ERRORDESC;
             Message('error', callError, 5);
-            setLoader(false);
         }
-    }, [setLoader]);
+    }, [dispatch]);
 
-    const createUserWithEmailAndPasswordHandler = async (name, email, password) => {
+    const createUserWithEmailAndPasswordHandler = useCallback(async (name, email, password) => {
         try{
           const {user} = await auth.createUserWithEmailAndPassword(email, password);
         //   generateUserDocument(user, {displayName});
@@ -56,21 +65,34 @@ const Register = () => {
             console.error("Error", error);
             Message('error', callError, 5);
         }
-    };
+    }, []);
+
+    const signUpWithGoogleHandler = useCallback(async () => {
+        setLoading({
+            ...loading,
+            google: true
+        })
+        await signInWithGoogle();
+
+        setLoading({
+            form: false,
+            google: false
+        })
+       
+
+    }, [setLoading, loading]);
 
     useEffect(() => {
-        // console.log('got here');
+        
         auth.onAuthStateChanged(async userAuth => {
-            console.log(userAuth)
             if(userAuth){
                 const user = await generateUserDocument(userAuth);
-                // console.log(user)
-                // setUser(user)
+              
                 processLogin(user)
             }
           
         });
-    }, [])
+    }, [processLogin])
 
     return (
         <div className="auth">
@@ -109,7 +131,12 @@ const Register = () => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        setLoader(true);
+
+                        setLoading({
+                            ...loading,
+                            form: true
+                        })
+
                         
                         createUserWithEmailAndPasswordHandler(values.name, values.email, values.password);
                     
@@ -158,8 +185,12 @@ const Register = () => {
                                 color="primary"
                                 variant="contained"
                                 type="submit"
+                                disabled={loading.google || loading.form}
                             >
-                                Register
+                                Register 
+                                {
+                                    loading.form ? <CircularProgress size={20} style={{color: 'white'}} /> : ''
+                                }
                             </Button>
 
                             <div className="text-center mt-3">
@@ -171,8 +202,13 @@ const Register = () => {
                                 color="primary"
                                 variant="contained"
                                 style={{background: '#dc3545'}}
+                                onClick={signUpWithGoogleHandler}
+                                disabled={loading.google || loading.form}
                             >
-                                Sign Up With Google
+                                Sign Up With Google 
+                                {
+                                    loading.google ? <CircularProgress size={20} style={{color: 'white'}} /> : ''
+                                }
                             </Button>
 
                             <div className="text-center mt-2">

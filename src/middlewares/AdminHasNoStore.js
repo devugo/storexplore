@@ -17,7 +17,7 @@ function AdminHasNoStore({ component: Component, ...rest }) {
         }catch (error){
             setMount(true);
         }
-    }, [setMount]);
+    }, [setMount, dispatch]);
 
     useEffect(() => {
         if(!auth.loggedIn){ // Try logging user back in
@@ -25,7 +25,7 @@ function AdminHasNoStore({ component: Component, ...rest }) {
         }else{
             setMount(true);
         }
-    }, []);
+    }, [logUserBackIn, auth.loggedIn]);
     return (
         <Route 
             {...rest} // Remember to add a loader page on mounting of page

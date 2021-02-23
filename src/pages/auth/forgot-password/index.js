@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { Formik } from 'formik';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 // import { Redirect } from 'react-router';
 
 import Button from '@material-ui/core/Button';
@@ -14,7 +14,7 @@ import { auth } from '../../../firebase';
 // import * as CONSTANTS from '../../../constants';
 
 const ForgotPassword = () => {
-    const [ loader, setLoader ] = useState(false);
+    // const [ loader, setLoader ] = useState(false);
     
     const processForgotPassword = useCallback(async (formData) => {
         auth.sendPasswordResetEmail(formData.email)
@@ -26,7 +26,7 @@ const ForgotPassword = () => {
             // setError("Error resetting password");
         });
         console.log("here");
-    }, [loader, setLoader])
+    }, [])
 
     return (
         <div className="auth">

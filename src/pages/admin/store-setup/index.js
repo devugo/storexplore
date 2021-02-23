@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik } from 'formik';
+import { Link } from "react-router-dom";
 
 import SetupStoreimage from '../../../images/setup-store.svg';
 
@@ -52,7 +53,7 @@ const StoreSetup = () => {
             Message('error', callError, 5);
         }
         setLoading(false);
-    }, [loading]);
+    }, [dispatch]);
 
     const updateStore = useCallback(async (formData) => {
         setLoading(true);
@@ -73,7 +74,7 @@ const StoreSetup = () => {
             Message('error', callError, 5);
         }
         setLoading(false);
-    }, [loading]);
+    }, [dispatch]);
 
     const getStore = useCallback(async () => {
         try {
@@ -83,20 +84,21 @@ const StoreSetup = () => {
             let callError = CONSTANTS.ERRORDESC;
             Message('error', callError, 5);
         }
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         getStore();
-    }, [])
+    }, [getStore])
 
     return (
         <div className="store-setup">
             <div className="content">
                 <div className="left">
                     <h1>STORE</h1>
-                    <img className="setup-img" src={SetupStoreimage} alt="setup image" />
+                    <img className="setup-img" src={SetupStoreimage} alt="store setup" />
                     <h2>SETUP YOUR STORE</h2>
                     <p>Easiest way to manage your store; stock on goods and profit calculations.</p>
+                    { store.data.name && <Link to="/admin"><span>Go to Dashboard</span></Link> }
                 </div>
                 <div className="right">
                     <h1>XPLORE</h1>
@@ -105,7 +107,7 @@ const StoreSetup = () => {
                         {
                             store.loaded ?
                             <>
-                                <p className="mt-3 mb-2"><strong>Create Store!</strong></p>
+                                <p className="mt-3 mb-2"><strong>{ store.data.name ? 'Update Store' : 'Create Store' }</strong></p>
                                 <Formik
                                     initialValues={{ name: store.data.name, description: store.data.description, sector: store.data.sector, address: store.data.address }}
                                     validate={values => {
@@ -145,7 +147,6 @@ const StoreSetup = () => {
                                             </div>
                                             <div className="mb-4">
                                                 <TextField
-                                                    id="outlined-select-currency"
                                                     select
                                                     label="Select a sector"
                                                     value={values.sector}

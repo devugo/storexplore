@@ -12,7 +12,7 @@ const initialState = {
     loaded: false
 };
 
-export default (state = initialState, action) => {
+const storeReducer = (state = initialState, action) => {
     switch(action.type){
         case READ_STORE:
 
@@ -65,3 +65,5 @@ export default (state = initialState, action) => {
             return state
     }
 }
+
+export default storeReducer;

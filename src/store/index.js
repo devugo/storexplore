@@ -4,10 +4,12 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import authReducer from './reducers/auth';
 import storeReducer from './reducers/store';
+import supplyReducer from './reducers/supply';
 
 export const rootReducer = combineReducers({
     auth: authReducer,
-    store: storeReducer
+    store: storeReducer,
+    supply: supplyReducer,
 });
 
 export const middlewares = [ReduxThunk];

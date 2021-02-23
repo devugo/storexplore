@@ -18,7 +18,7 @@ function NotAuth({ component: Component, ...rest }) {
         }catch (error){
             setMount(true);
         }
-    }, [setMount]);
+    }, [setMount, dispatch]);
 
     useEffect(() => {
         if(!auth.loggedIn){ // Try logging user back in
@@ -26,7 +26,7 @@ function NotAuth({ component: Component, ...rest }) {
         }else{
             setMount(true);
         }
-    }, []);
+    }, [auth.loggedIn, logUserBackIn]);
     return (
         <Route 
             {...rest}

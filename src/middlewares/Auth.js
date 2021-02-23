@@ -25,7 +25,7 @@ function Auth({ component: Component, ...rest }) {
         }else{
             setMount(true);
         }
-    }, [auth.loggedIn]);
+    }, [auth.loggedIn, logUserBackIn]);
     return (
         <Route 
             {...rest} // Remember to add a loader page on mounting of page

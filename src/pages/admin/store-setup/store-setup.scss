@@ -5,7 +5,6 @@
         display: flex;
 
         .left {
-            background-color: #ccffe4;
             background: linear-gradient(rgba(29, 38, 113, 0.8), rgba(195, 55, 100, 0.8));
             flex: 1;
             display: flex;
@@ -31,6 +30,18 @@
             .setup-img {
                 width: 60%;
                 // object-fit: cover;
+            }
+
+            a {
+                padding: 15px 30px;
+                background-color: $primary-color;
+                color: $black;
+                @include transition-ease;
+
+                &:hover {
+                    background-color: #a1ffcd;
+                    text-decoration: none;
+                }
             }
         }
         .right {

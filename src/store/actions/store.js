@@ -36,9 +36,9 @@ export const create = (formData) => {
                     throw error;
                 }
             }else {
-                throw {
+                throw new Error({
                     message: "Store already exists!"
-                };
+                });
             }
 
            

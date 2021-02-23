@@ -36,7 +36,7 @@ const Login = () => {
     // const [ user, setUser ] = useState();
 
     const processLogin = useCallback(async (user) => {
-        console.log(user);
+        
         try {
             await dispatch(AuthActions.login(user));
             Message('success', 'Login successful', 5);
@@ -58,7 +58,7 @@ const Login = () => {
             // })
             Message('error', callError, 5);
         }
-    }, [setLoading]);
+    }, [dispatch]);
 
     // console.log(user)
 
@@ -74,7 +74,7 @@ const Login = () => {
 
             // console.error("Error signing in with password and email", error);
         });
-    }, [setLoading]);
+    }, []);
 
     const signInWithGoogleHandler = useCallback(async () => {
         setLoading({
@@ -92,18 +92,16 @@ const Login = () => {
     }, [setLoading, loading]);
 
     useEffect(() => {
-        // console.log('got here');
         auth.onAuthStateChanged(async userAuth => {
-            // console.log(userAuth)
+            
             if(userAuth){
                 const user = await generateUserDocument(userAuth);
-                // console.log(user)
-                // setUser(user)
+                
                 processLogin(user)
             }
           
         });
-    }, [])
+    }, [processLogin])
 
     if(userAuth && userAuth.loggedIn){
         return <Redirect to="/admin" />
