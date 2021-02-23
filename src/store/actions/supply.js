@@ -96,6 +96,7 @@ export const read = (formData) => {
             
             const supplyRef = firestore.collection(`supply`).where('uuid', "==", uuid);
             const snapshots = await supplyRef.get();
+            // console.log(snapshots)
 
             let supply = [];
             snapshots.forEach((doc) => supply.push(doc.data()))

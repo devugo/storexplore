@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik } from 'formik';
+import {useDropzone} from 'react-dropzone'
 
 // Bootstrap Components
 import { Card } from 'react-bootstrap';
@@ -16,8 +17,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
 
 import DashboardWrapper from "../../../components/dashboard-wrapper";
 import * as CONSTANTS from '../../../constants';
@@ -28,27 +27,37 @@ import { sideLinks } from '../nav-links';
 //  Redux Actions
 import * as SupplyActions from '../../../store/actions/supply';
 
+import './supply.scss';
+
 
 
 const Supply = () => {
     const supply = useSelector(state => state.supply);
     const dispatch = useDispatch();
 
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
     const [loading, setLoading] = useState(CONSTANTS.LOADERS);
     const [open, setOpen] = useState(false);
 
+    const [productImage, setProductImage] = useState()
+
     const handleClickOpen = () => {
-      setOpen(true);
+        setOpen(true);
     };
   
     const handleClose = () => {
-      setOpen(false);
+        setOpen(false);
     }; 
 
     // Message('success', 'Supply was created successfully', 5);
+
+    const onDrop = useCallback(acceptedFiles => {
+        // Do something with the files
+        setProductImage(acceptedFiles[0]);
+        console.log(acceptedFiles)
+    }, [setProductImage])
+    
+    //  Dropzone params
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
     const createSupply = useCallback(async (formData) => {
         console.log(formData)
@@ -92,9 +101,15 @@ const Supply = () => {
         getSupply();
     }, [])
 
+    // useEffect(() => {
+    //     if(productImage) {
+
+    //     }
+    // })
+
     return (
         <DashboardWrapper sidenavs={sideLinks}>
-            <div className="admin-supply">
+            <div className="supply-page admin-supply">
                 <Button
                     color="primary"
                     variant="contained"
@@ -109,24 +124,15 @@ const Supply = () => {
                     {
                         supply.loaded && supply.data.map((item, index) => {
                             return (
-                                <Grid item md={6} lg={3}>
+                                <Grid item md={6} lg={3} key={index}>
                                     <Card style={{ width: '100%' }}>
                                         <Card.Img variant="top" src="holder.js/100px180" />
                                         <Card.Body>
-                                            <Card.Title>Card Title</Card.Title>
+                                            <Card.Title>{item.name}</Card.Title>
                                             <Card.Text>
-                                                Some quick example text to build on the card title and make up the bulk of
-                                                the card's content.
-                                                Some quick example text to build on the card title and make up the bulk of
-                                                the card's content.
-                                                Some quick example text to build on the card title and make up the bulk of
-                                                the card's content.
-                                                Some quick example text to build on the card title and make up the bulk of
-                                                the card's content.
-                                                Some quick example text to build on the card title and make up the bulk of
-                                                the card's content.
+                                                {item.description}
                                             </Card.Text>
-                                            <Button variant="primary">Go somewhere</Button>
+                                            <Button variant="primary">View</Button>
                                         </Card.Body>
                                     </Card>
                                 </Grid>
@@ -185,7 +191,7 @@ const Supply = () => {
                     </DialogContentText> */}
                    
                         <Formik
-                            initialValues={{ name: '', description: '', cost: '', sellingPrice: '' }}
+                            initialValues={{ name: '', description: '', cost: '', sellingPrice: '', image: '' }}
                             validate={values => {
                             const errors = {};
                             if (!values.name) {
@@ -238,6 +244,17 @@ const Supply = () => {
                                 <div className="mb-4">
                                     <TextField onChange={handleChange} type="number" value={values.sellingPrice} id="cost" name="sellingPrice" label="Selling Price" variant="outlined" fullWidth error={errors.sellingPrice && touched.sellingPrice && true} /> 
                                     <small className="text-danger">{errors.sellingPrice && touched.sellingPrice && errors.sellingPrice}</small>
+                                </div>
+                                <div className="mb-4">
+                                    <div className={`storexplore-dropzone ${productImage ? 'active' : ''}`} {...getRootProps()}>
+                                        <input {...getInputProps()} />
+                                        {
+                                            isDragActive ?
+                                            <p>Drop the product image here ...</p> :
+                                            <p>Drag and drop product image here, or click to select product image</p>
+                                        }
+                                    </div>
+                                    <small className="text-danger">{errors.image && touched.image && errors.image}</small>
                                 </div>
                                 <Button
                                     color="primary"
